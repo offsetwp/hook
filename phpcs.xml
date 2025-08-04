@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="OffsetWP Hook Coding Standards">
+	<description>PHPCS</description>
+
+	<arg value="ps"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+
+	<rule ref="WordPress">
+		<exclude name="WordPress.Files.FileName" />
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents" />
+		<exclude name="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents" />
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_mkdir" />
+		<exclude name="WordPress.WP.AlternativeFunctions.file_system_operations_rmdir" />
+		<exclude name="WordPress.WP.AlternativeFunctions.unlink_unlink" />
+		<exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
+		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames" />
+	</rule>
+
+	<file>commands</file>
+	<file>src</file>
+
+	<exclude-pattern>vendor</exclude-pattern>
+</ruleset>

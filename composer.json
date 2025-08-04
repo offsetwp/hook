@@ -1,0 +1,41 @@
+{
+	"name": "offsetwp/hook",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jérôme Wohlschlegel",
+			"email": "jerome.wohlschlegel@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Offsetwp\\Hook\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Offsetwp\\Hook\\Commands\\": "commands/"
+		}
+	},
+	"require": {
+		"php": ">=8.1"
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^3.2",
+		"wp-hooks/wordpress-core": "^1.10",
+		"nette/php-generator": "^4.1",
+		"squizlabs/php_codesniffer": "^3.13",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.1"
+	},
+	"minimum-stability": "stable",
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"scripts": {
+		"lint": "@php vendor/bin/phpcs",
+		"generate-wordpress-hooks": "Offsetwp\\Hook\\Commands\\GenerateWordPressHooksCommand::execute"
+	}
+}
