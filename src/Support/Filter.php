@@ -1,13 +1,13 @@
 <?php
 /**
- * AddFilter
+ * Filter
  *
- * @package Offsetwp\Hook
+ * @package OffsetWP\Hook\Support
  */
 
 declare(strict_types=1);
 
-namespace Offsetwp\Hook\Support;
+namespace OffsetWP\Hook\Support;
 
 /**
  * Adds a callback function to a filter hook.
@@ -19,9 +19,9 @@ namespace Offsetwp\Hook\Support;
  * is later applied, each bound callback is run in order of priority, and given
  * the opportunity to modify a value by returning a new value.
  *
- * @package Offsetwp\Hook
+ * @package OffsetWP\Hook\Support
  */
-abstract class AddFilter {
+abstract class Filter {
 	/**
 	 * The name of the filter to add the callback to.
 	 *
@@ -34,7 +34,7 @@ abstract class AddFilter {
 	 *
 	 * @var string
 	 */
-	public string $hook_callback = 'execute';
+	public string $hook_callback = 'handle';
 
 	/**
 	 * Optional. Used to specify the order in which the functions associated with a particular filter are executed. Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the filter. Default 10.
@@ -63,6 +63,6 @@ abstract class AddFilter {
 		if ( ! $this->hook_callback || ! method_exists( $this, $this->hook_callback ) ) {
 			throw new \ErrorException( \esc_html( "Invalid or undefined callback method '{$this->hook_callback}'" ) );
 		}
-		\add_filter( $this->hook_name, array( $this, $this->hook_callback ), $this->hook_priority, $this->hook_accepted_args );
+		\add_filter( $this->hook_name, \Closure::fromCallable( array( $this, $this->hook_callback ) ), $this->hook_priority, $this->hook_accepted_args );
 	}
 }
