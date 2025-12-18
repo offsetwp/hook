@@ -1,13 +1,13 @@
 <?php
 /**
- * AddAction
+ * Action
  *
- * @package Offsetwp\Hook
+ * @package OffsetWP\Hook\Support
  */
 
 declare(strict_types=1);
 
-namespace Offsetwp\Hook\Support;
+namespace OffsetWP\Hook\Support;
 
 /**
  * Adds a callback function to a filter hook
@@ -16,8 +16,10 @@ namespace Offsetwp\Hook\Support;
  * during execution, or when specific events occur. Plugins can specify that
  * one or more of its PHP functions are executed at these points, using the
  * Action API.
+ *
+ * @package OffsetWP\Hook\Support
  */
-abstract class AddAction {
+abstract class Action {
 	/**
 	 * The name of the action to add the callback to.
 	 *
@@ -30,7 +32,7 @@ abstract class AddAction {
 	 *
 	 * @var string
 	 */
-	public string $hook_callback = 'execute';
+	public string $hook_callback = 'handle';
 
 	/**
 	 * Optional. Used to specify the order in which the functions associated with a particular action are executed. Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action. Default 10.
@@ -59,6 +61,6 @@ abstract class AddAction {
 		if ( ! $this->hook_callback || ! method_exists( $this, $this->hook_callback ) ) {
 			throw new \ErrorException( \esc_html( "Invalid or undefined callback method '{$this->hook_callback}'" ) );
 		}
-		\add_action( $this->hook_name, array( $this, $this->hook_callback ), $this->hook_priority, $this->hook_accepted_args );
+		\add_action( $this->hook_name, \Closure::fromCallable( array( $this, $this->hook_callback ) ), $this->hook_priority, $this->hook_accepted_args );
 	}
 }

@@ -1,12 +1,12 @@
-![OffsetWP Hook](/doc/static/cover-light.png#gh-light-mode-only)
-![OffsetWP Hook](/doc/static/cover-dark.png#gh-dark-mode-only)
+![OffsetWP Hook](https://raw.githubusercontent.com/offsetwp/offsetwp.github.io/refs/heads/main/public/common/cover/cover-hook-light.png#gh-light-mode-only)
+![OffsetWP Hook](https://raw.githubusercontent.com/offsetwp/offsetwp.github.io/refs/heads/main/public/common/cover/cover-hook-dark.png#gh-dark-mode-only)
 
 <h1 align="center">
     OffsetWP Hook
 </h1>
 
 <p align="center">
-    A library to manage WordPress actions, filters and shortcodes hooks
+    Typed, secure, modern, and object-oriented hook registration for WordPress
 </p>
 
 ## Installation
@@ -20,12 +20,12 @@ composer require offsetwp/hook
 ### Add a basic action
 
 ```php
-use Offsetwp\Hook\Support\AddAction;
+use OffsetWP\Hook\Support\Action;
 
-new class extends AddAction {
+new class extends Action {
 	public string $hook_name = 'init';
 
-	public function execute() {
+	protected function handle() {
 		register_post_type(
 			'project',
 			array(
@@ -44,12 +44,12 @@ new class extends AddAction {
 ### Add a basic filter
 
 ```php
-use Offsetwp\Hook\Support\AddFilter;
+use OffsetWP\Hook\Support\Filter;
 
-new class extends AddFilter {
+new class extends Filter {
 	public string $hook_name = 'admin_footer_text';
 
-	public function execute( $text ) {
+	protected function handle( $text ) {
 		return 'Made with love by OffsetWP | ' . $text;
 	}
 };
@@ -58,12 +58,12 @@ new class extends AddFilter {
 ### Add a basic shortcode
 
 ```php
-use Offsetwp\Hook\Support\AddShortCode;
+use OffsetWP\Hook\Support\ShortCode;
 
-new class extends AddShortCode {
+new class extends ShortCode {
 	public string $hook_name = 'my_shortcode';
 
-	public function execute( array $atts, string $content, string $shortcode_tag ) {
+	protected function handle( array $atts, string $content, string $shortcode_tag ) {
 		return 'My shortcode';
 	}
 };
@@ -76,52 +76,34 @@ Hooks all work in the same way: they have a name, a callback function, the order
 For greater flexibility, it is possible to override some properties without affecting others. Here is an filter with all possible properties:
 
 ```php
-use Offsetwp\Hook\Support\AddFilter;
+use OffsetWP\Hook\Support\Filter;
 
-new class extends AddFilter {
+new class extends Filter {
 	public string $hook_name       = 'admin_footer_text';
-	public string $hook_callback   = 'launch'; // default: `execute`
+	public string $hook_callback   = 'launch'; // default: `handle`
 	public int $hook_priority      = 10; // default: 10
 	public int $hook_accepted_args = 1; // default: 1
 
-	public function launch( $text ) {
+	protected function launch( $text ) {
 		return 'Made with love by OffsetWP | ' . $text;
 	}
 };
 ```
 
-## Use the WordPress core hooks
-
-WordPress makes extensive use of hooks for its internal functioning. OffsetWP Hook provides ready-to-use wrappers for the most common native hooks.
-
-They are available in:
-- `Offsetwp\Hook\WordPress\Action`
-- `Offsetwp\Hook\WordPress\Filter`
-
-The wrappers already include the exact callback signatures, enabling optimal autocompletion in your IDE.
-
-### Basic usage
+With more substantial development, it may be necessary for your hooks to use dependencies. All of this is possible, depending on your needs:
 
 ```php
-use Offsetwp\Hook\WordPress\Filter\WPAdminFooterTextAddFilter;
+use OffsetWP\Hook\Support\Filter;
 
-new class extends WPAdminFooterTextAddFilter {
-	public function execute( $text ) {
-		return 'Made with love by OffsetWP | ' . $text;
+new class extends Filter {
+	public string $hook_name = 'admin_footer_text';
+
+	public function __construct( private $myServiceName = 'CustomService' ) {
+		return parent::__construct();
 	}
-};
-```
 
-### Hook with a dynamique name
-
-```php
-use Offsetwp\Hook\WordPress\Filter\WPGetMetaTypeMetadataAddFilter;
-
-new class extends WPGetMetaTypeMetadataAddFilter {
-	public string $hook_name = 'get_post_metadata'; // 'get_{$meta_type}_metadata'
-
-	public function execute( $value, $object_id, $meta_key, $single, $meta_type ) {
-		return $value;
+	protected function handle( $text ) {
+		return $this->myServiceName . ' | ' . $text;
 	}
 };
 ```

@@ -1,13 +1,13 @@
 <?php
 /**
- * AddShortCode
+ * ShortCode
  *
- * @package Offsetwp\Hook
+ * @package OffsetWP\Hook\Support
  */
 
 declare(strict_types=1);
 
-namespace Offsetwp\Hook\Support;
+namespace OffsetWP\Hook\Support;
 
 /**
  * Adds a new shortcode.
@@ -17,9 +17,9 @@ namespace Offsetwp\Hook\Support;
  * already-added shortcode tags. In the event of a duplicated tag, the tag
  * loaded last will take precedence.
  *
- * @package Offsetwp\Hook
+ * @package OffsetWP\Hook\Support
  */
-abstract class AddShortCode {
+abstract class ShortCode {
 	/**
 	 * Shortcode tag to be searched in post content.
 	 *
@@ -32,7 +32,7 @@ abstract class AddShortCode {
 	 *
 	 * @var string
 	 */
-	public string $hook_callback = 'execute';
+	public string $hook_callback = 'handle';
 
 	/**
 	 * Adds a new shortcode
@@ -47,6 +47,6 @@ abstract class AddShortCode {
 		if ( ! $this->hook_callback || ! method_exists( $this, $this->hook_callback ) ) {
 			throw new \ErrorException( \esc_html( "Invalid or undefined callback method '{$this->hook_callback}'" ) );
 		}
-		\add_shortcode( $this->hook_name, array( $this, $this->hook_callback ) );
+		\add_shortcode( $this->hook_name, \Closure::fromCallable( array( $this, $this->hook_callback ) ) );
 	}
 }
